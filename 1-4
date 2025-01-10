@@ -134,3 +134,486 @@ echo "The current server Ɵme is $h:$m:$s<br>";
 echo "In words, the Ɵme is - $h hours, $m minutes, and $s seconds";
 echo "</center></html>";
 ?> 
+5-html
+<html>
+<head>
+<title>Database Table Viewer</title>
+</head>
+<body>
+<h2>Enter Database and Table Name</h2>
+<form action="display.php" method="post">
+<label for="dbname">Database Name:</label>
+<input type="text" id="dbname" name="dbname" required><br><br>
+<label for="tablename">Table Name:</label>
+<input type="text" id="tablename" name="tablename" required><br><br>
+<input type="submit" value="Display Table">
+</form>
+</body>
+</html>
+5.php
+<?php
+$dbname = $_POST['dbname'];
+$tablename = $_POST['tablename'];
+$servername = "localhost";
+$username = "root";
+$password = "";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+die("Connection failed: " . $conn->connect_error);
+}
+$sql = "SELECT * FROM $tablename";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+echo "<h2>Contents of Table: $tablename</h2>";
+echo "<table border='1'>";
+$columns = $result->fetch_fields();
+echo "<tr>";
+foreach ($columns as $column) {
+echo "<th>" . $column->name . "</th>";
+}
+echo "</tr>";
+while ($row = $result->fetch_assoc()) {
+echo "<tr>";
+foreach ($row as $value) {
+echo "<td>" . htmlspecialchars($value) . "</td>";
+}
+echo "</tr>";
+}
+echo "</table>";
+} else {
+echo "No data found in the table.";
+}
+$conn->close();
+?>
+6.html
+<html>
+<head>
+<title>Insert Data</title>
+</head>
+<body>
+<h2>Insert New Record</h2>
+<form action="insert.php" method="post">
+<label for="name">Name:</label>
+<input type="text" id="name" name="name" required><br><br>
+<label for="age">Age:</label>
+<input type="number" id="age" name="age" required><br><br>
+<input type="submit" value="Insert">
+</form>
+</body>
+</html>
+6.php
+<?php
+$name = $_POST['name'];
+$age = $_POST['age'];
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "test";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+die("Connection failed: " . $conn->connect_error);
+}
+$sql = "INSERT INTO info (name, age) VALUES ('$name', $age)";
+if ($conn->query($sql) === TRUE) {
+echo "New record created successfully";
+} else {
+echo "Error: " . $sql . "<br>" . $conn->error;
+}
+$conn->close();
+?>
+7.html
+<html>
+<head>
+<title>Database Table Viewer</title>
+</head>
+<body>
+<h2>Enter Database and Table Name</h2>
+<form action="query.php" method="post">
+<label for="dbname">Database Name:</label>
+<input type="text" id="dbname" name="dbname" required><br><br>
+<label for="query">Query:</label>
+<input type="text" id="query" name="query" required><br><br>
+<input type="submit" value="Display Table">
+</form>
+</body>
+</html>
+7.php
+<?php
+$dbname = $_POST['dbname'];
+$query=$_POST['query'];
+$servername = "localhost";
+$username = "root";
+$password = "";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+die("Connection failed: " . $conn->connect_error);
+}
+$result = $conn->query($query);
+if ($result->num_rows > 0) {
+echo "<h2>Contents of Table:</h2>";
+echo "<table border='1'>";
+$columns = $result->fetch_fields();
+echo "<tr>";
+foreach ($columns as $column) {
+echo "<th>" . $column->name . "</th>";
+}
+echo "</tr>";
+while ($row = $result->fetch_assoc()) {
+echo "<tr>";
+foreach ($row as $value) {
+echo "<td>" . htmlspecialchars($value) . "</td>";
+}
+echo "</tr>";
+}
+echo "</table>";
+} else {
+echo "No data found in the table.";
+}
+$conn->close();
+?>
+8.html
+<html>
+<head>
+<title>Insert Data</title>
+</head>
+<body>
+<h2>Insert New Record</h2>
+<form action="insert_book.php" method="post">
+<label for="id">Book_id:</label>
+<input type="number" id="id" name="id" required><br><br>
+<label for="name">Book Name:</label>
+<input type="text" id="name" name="name" required><br><br>
+<label for="a_name">Author Name:</label>
+<input type="text" id="a_name" name="a_name" required><br><br>
+<label for="edition">Edition:</label>
+<input type="number" id="edition" name="edition" required><br><br>
+<label for="publisher">Publisher:</label>
+<input type="text" id="publisher" name="publisher" required><br><br>
+<input type="submit" value="Insert">
+</form>
+</body>
+</html>
+8.php
+<?php
+$id = $_POST['id'];
+$name = $_POST['name'];
+$author = $_POST['a_name'];
+$edition = $_POST['edition'];
+$publisher = $_POST['publisher'];
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "test";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+die("Connection failed: " . $conn->connect_error);
+}
+$sql = "INSERT INTO books VALUES ($id, '$name','$author',$edition,'$publisher')";
+if ($conn->query($sql) === TRUE) {
+echo "New record created successfully";
+} else {
+echo "Error: " . $sql . "<br>" . $conn->error;
+}
+$conn->close();
+?>
+9.html
+<html>
+<head>
+<title>Book Search</title>
+</head>
+<body>
+<h2>Search for a Book</h2>
+<form action="search.php" method="post">
+<label for="title">Book Title:</label>
+<input type="text" id="title" name="title" required><br><br>
+<input type="submit" value="Search">
+</form>
+</body>
+</html>
+9.php
+<?php
+$title = $_POST['title'];
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "library";
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+die("Connection failed: " . $conn->connect_error);
+}
+$sql = "SELECT * FROM books WHERE name LIKE '%$title%'";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+echo "<h2>Search Results for '$title'</h2>";
+echo "<table border='1'>";
+$columns = $result->fetch_fields();
+echo "<tr>";
+foreach ($columns as $column) {
+echo "<th>" . $column->name . "</th>";
+}
+echo "</tr>";
+while ($row = $result->fetch_assoc()) {
+echo "<tr>";
+foreach ($row as $value) {
+echo "<td>" . htmlspecialchars($value) . "</td>";
+}
+echo "</tr>";
+}
+echo "</table>";
+} else {
+echo "<h2>No results found for '$title'</h2>";
+}
+$conn->close();
+?>
+10a. HTML:
+<html>
+<head>
+<title>Greetings</title>
+</head>
+<body>
+<form action="greet" method="post">
+<h2>Enter your name:</h2>
+<input type=text name=name />
+<input type=submit value=submit />
+</form>
+</body>
+</html>
+Servlet:
+import java.io.PrintWriter;
+import java.util.Random;
+private static final String[] GREETINGS = {
+"Hello", "Welcome", "Hi there", "Greetings", "Hey", "Good to see
+you"
+};
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+response.getWriter().append("Served at:
+").append(request.getContextPath());
+String username = request.getParameter("name");
+Random random = new Random();
+String greeting = GREETINGS[random.nextInt(GREETINGS.length)];
+response.setContentType("text/html");
+PrintWriter out = response.getWriter();
+out.println("<html><body>");
+out.println("<h2>" + greeting + ", " + username + "!</h2>");
+out.println("</body></html>");
+}
+10b.HTML:
+<html>
+<head>
+<title>BG Colour Changer</title>
+</head>
+<body>
+<h2>Select a Background Color</h2>
+<form action="color" method="POST">
+<label for="color">Choose a color:</label>
+<input type="color" id="color" name="color" required>
+<button type="submit">Apply Color</button>
+</form>
+</body>
+</html>
+Servlet:
+import java.io.PrintWriter;
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+doGet(request, response);
+String color = request.getParameter("color");
+response.setContentType("text/html");
+PrintWriter out = response.getWriter();
+out.println("<html>");
+out.println("<head><title>Background Color Changer</title></head>");
+out.println("<body style='background-color: " + color + ";'>");
+out.println("<h2>The background color has been set to: " + color +
+"</h2>");
+out.println("<a href='bgcolour.html'>Choose another color</a>");
+out.println("</body></html>");
+}
+11.HTML:
+<html>
+<head>
+<title>Greeting message</title>
+</head>
+<body>
+<h2>Welcome!</h2>
+<p>Click the button below to get a greeting based on the server's current
+time:</p>
+<form action="greeting" method="GET">
+<button type="submit">Get Greeting</button>
+</form>
+</body>
+</html>
+Servlet:
+import java.io.PrintWriter;
+import java.time.LocalTime;
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+response.getWriter().append("Served at:
+").append(request.getContextPath());
+LocalTime currentTime = LocalTime.now();
+String greeting;
+if (currentTime.isBefore(LocalTime.NOON)) {
+greeting = "Good Morning!";
+} else if (currentTime.isBefore(LocalTime.of(17, 0))) {
+greeting = "Good Afternoon!";
+} else {
+greeting = "Good Evening!";
+}
+response.setContentType("text/html");
+PrintWriter out = response.getWriter();
+out.println("<html>");
+out.println("<head><title>Greeting Message</title></head>");
+out.println("<body>");
+out.println("<h2>" + greeting + "</h2>");
+out.println("<p>The current server time is: " + currentTime + "</p>");
+out.println("<a href='greeting.html'>Back to Home</a>"); // Link to go
+back to the HTML page
+out.println("</body></html>");
+}
+12.HTML:
+<html>
+<head>
+<title>Cookie Creator</title>
+</head>
+<body>
+<h2>Enter Your Name</h2>
+<form action="cookie" method="POST">
+<label for="username">Name:</label>
+<input type="text" id="username" name="username" required>
+<button type="submit">Submit</button>
+</form>
+</body>
+</html>
+Servlet:
+import java.io.PrintWriter;
+import javax.servlet.http.Cookie;
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+doGet(request, response);
+String username = request.getParameter("username");
+Cookie userCookie = new Cookie("username", username);
+userCookie.setMaxAge(60 * 60 * 24); // Set cookie to expire in 24 hours
+response.addCookie(userCookie);
+response.setContentType("text/html");
+PrintWriter out = response.getWriter();
+out.println("<html>");
+out.println("<head><title>Cookie Example</title></head>");
+out.println("<body>");
+out.println("<h2>Hello, " + username + "!</h2>");
+out.println("<p>Your name has been saved in a cookie.</p>");
+out.println("<h3>Current Cookies:</h3>");
+Cookie[] cookies = request.getCookies();
+if (cookies != null) {
+for (Cookie cookie : cookies) {
+out.println("<p>" + cookie.getName() + " = " + cookie.getValue() +
+"</p>");
+}
+} else {
+out.println("<p>No cookies found.</p>");
+}
+out.println("</body></html>");
+}
+13.HTML:
+<html>
+<head>
+<title>Session Information</title>
+</head>
+<body>
+<h2>Click the button to start a session and display session information</h2>
+<form action="session" method="post">
+<input type="submit" value="Display Session Information">
+</form>
+</body>
+</html>
+Servlet:
+import java.util.Date;
+import java.io.PrintWriter;
+import javax.servlet.http.HttpSession;
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+response.setContentType("text/html");
+HttpSession session = request.getSession(true);
+String sessionId = session.getId();
+long creationTime = session.getCreationTime();
+long lastAccessedTime = session.getLastAccessedTime();
+PrintWriter out = response.getWriter();
+out.println("<html><head><title>Session
+Information</title></head><body>");
+out.println("<h2>Session Information</h2>");
+out.println("<p>Session ID: " + sessionId + "</p>");
+out.println("<p>Creation Time: " + new Date(creationTime) + "</p>");
+out.println("<p>Last Accessed Time: " + new Date(lastAccessedTime) +
+"</p>");
+out.println("</body></html>");
+out.close();
+}
+14.HTML:
+<html>
+<head>
+<title>Server Information</title>
+</head>
+<body>
+<h2>Click the button to view server request information</h2>
+<form action="requestsession" method="post">
+<input type="submit" value="Get Server Information">
+</form>
+</body>
+</html>
+Servlet:
+import java.io.PrintWriter;
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+doGet(request, response);
+response.setContentType("text/html");
+String requestMethod = request.getMethod();
+String requestURL = request.getRequestURL().toString();
+String protocol = request.getProtocol();
+String remoteAddr = request.getRemoteAddr();
+PrintWriter out = response.getWriter();
+out.println("<html><head><title>Server Information</title></head><body>");
+out.println("<h2>Server Request Information</h2>");
+out.println("<p>Request Method: " + requestMethod + "</p>");
+out.println("<p>Request URL: " + requestURL + "</p>");
+out.println("<p>Protocol: " + protocol + "</p>");
+out.println("<p>Remote Address: " + remoteAddr + "</p>");
+out.println("</body></html>");
+out.close();
+}
+15.HTML:
+<html>
+<head>
+<title>User Information</title>
+</head>
+<body>
+<h2>Enter Your Information</h2>
+<form action="userinfo" method="post">
+<label for="username">Username:</label>
+<input type="text" id="username" name="username" required><br><br>
+<label for="address">Address:</label>
+<input type="text" id="address" name="address" required><br><br>
+<input type="submit" value="Submit">
+</form>
+</body>
+</html>
+Servlet:
+import java.io.PrintWriter;
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+doGet(request, response);
+response.setContentType("text/html");
+String username = request.getParameter("username");
+String address = request.getParameter("address");
+PrintWriter out = response.getWriter();
+out.println("<html><head><title>User Information</title></head><body>");
+out.println("<h2>User Information</h2>");
+out.println("<p>Username: " + username + "</p>");
+out.println("<p>Address: " + address + "</p>");
+out.println("</body></html>");
+out.close();
+}
