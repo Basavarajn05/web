@@ -1,0 +1,136 @@
+1a.
+HTML:
+<html>
+ <form action="1a.php" method="post">
+ <center>
+ <input type="submit" value="Show Server Info" />
+ </center>
+ </form>
+</html>
+PHP:
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+ echo "<html><center><table border='1'>";
+ echo "<tr><th>ENV_VARIABLES</th><th>Value</th></tr>";
+ foreach ($_SERVER as $key => $value) {
+ echo "<tr><td>$key</td><td>$value</td></tr>";
+ }
+ echo "</table></center></html>";
+}
+?>
+1b.
+HTML:
+<html>
+ <form action="1b.php" method="post">
+ Command: <input type="text" name="com" />
+ <input type="submit" value="Submit" />
+ </form>
+</html>
+PHP:
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+ $command = $_POST['com'];
+ $output = shell_exec($command);
+ echo "<html><center><pre>$output</pre></center></html>";
+}?>
+2a.
+HTML:
+<html>
+ <form action="2a.php" method="post">
+ <center>
+ <h2>Enter your name:</h2>
+ <input type="text" name="name" />
+ <input type="submit" value="Submit" />
+ </center>
+ </form>
+</html>
+PHP:
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+ $name = $_POST['name'];
+ $greet = ["Hello", "Hai", "Nice meeƟng you", "Have a nice day"];
+ $index = rand(0, count($greet) - 1);
+ echo "<html><center><h2>$name, $greet[$index]</h2></center></html>";
+}
+?>
+2b.
+HTML:
+<html>
+ <form action="2b.php" method="post">
+ <center>
+ <input type="submit" value="Show Number of Views" />
+ </center>
+ </form>
+</html>
+PHP:
+<?php
+$file = 'count.txt';
+if (!file_exists($file)) {
+ file_put_contents($file, '0');
+}
+$count = (int)file_get_contents($file);
+$count++;
+file_put_contents($file, $count);
+echo "<html><center>This page has been viewed $count
+Ɵmes</center></html>";
+?>
+3.HTML:
+<html>
+ <form action="4.php" method="post">
+ <center>
+ <h2>Login as Webmaster</h2>
+ Username: <input type="text" name="username" />
+ Password: <input type="password" name="password" />
+ <input type="submit" value="Login" />
+ </center>
+ </form>
+</html>
+PHP:
+<?php
+session_start();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+ $username = $_POST['username'] ?? '';
+ $password = $_POST['password'] ?? '';
+ if ($username === 'webmaster' && $password === 'password123') {
+ $_SESSION['loggedin'] = true;
+ $_SESSION['username'] = $username;
+ } else {
+ exit('<html><center><h2>Invalid username or password. Please try
+again.</h2></center></html>');
+ }
+}
+if (isset($_GET['logout'])) {
+ session_destroy();
+ exit('<html><center><h2>You have been logged out successfully.</h2><a
+href="4php.html">Login again</a></center></html>');
+}
+if ($_SESSION['loggedin'] ?? false) {
+ $hour = date("H");
+ $greeƟng = ($hour < 5) ? 'Good Night' : (($hour < 12) ? 'Good Morning' :
+(($hour < 17) ? 'Good AŌernoon' : 'Good Evening'));
+ $Ɵme = date("H:i:s");
+ exit("<html><center><h2>$greeƟng, {$_SESSION['username']}!</h2><p>The
+current server Ɵme is: $Ɵme</p><a
+href='4.php?logout=true'>Logout</a></center></html>");
+}
+?>
+4.HTML:
+<html>
+ <form action="3.php" method="post">
+ <center>
+ <input type="submit" value="Click to Display Time" />
+ </center>
+ </form>
+</html>
+PHP:
+<?php
+header("Refresh:1");
+echo "<html><center>";
+$currentTime = Ɵme();
+$s = date("s", $currentTime);
+$m = date("i", $currentTime);
+$h = date("H", $currentTime);
+echo "The current server Ɵme is $h:$m:$s<br>";
+echo "In words, the Ɵme is - $h hours, $m minutes, and $s seconds";
+echo "</center></html>";
+?> 
